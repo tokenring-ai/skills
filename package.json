@@ -1,0 +1,28 @@
+{
+  "name": "@tokenring-ai/skills",
+  "version": "0.2.0",
+  "description": "Agent skills system for Token Ring",
+  "dependencies": {
+    "@tokenring-ai/agent": "0.2.0",
+    "@tokenring-ai/app": "0.2.0",
+    "@tokenring-ai/chat": "0.2.0",
+    "@tokenring-ai/utility": "0.2.0",
+    "zod": "^4.3.6"
+  },
+  "exports": {
+    ".": "./index.ts",
+    "./*": "./*.ts"
+  },
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "build": "tsc --noEmit",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  }
+}
