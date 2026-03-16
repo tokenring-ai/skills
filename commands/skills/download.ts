@@ -1,10 +1,18 @@
-import Agent from "@tokenring-ai/agent/Agent";
 import {CommandFailedError} from "@tokenring-ai/agent/AgentError";
-import {TokenRingAgentCommand} from "@tokenring-ai/agent/types";
+import type {AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentCommand} from "@tokenring-ai/agent/types";
 import SkillService from "../../SkillService.ts";
 
-async function execute(remainder: string, agent: Agent): Promise<string> {
-  const zipUrl = remainder.trim();
+const inputSchema = {
+  args: {},
+  prompt: {
+    description: "Skill ZIP URL",
+    required: true,
+  },
+  allowAttachments: false,
+} as const satisfies AgentCommandInputSchema;
+
+async function execute({prompt, agent}: AgentCommandInputType<typeof inputSchema>): Promise<string> {
+  const zipUrl = prompt.trim();
   if (!zipUrl) throw new CommandFailedError("Usage: /skills download <zip-url>");
   const skill = await agent.requireServiceByType(SkillService).downloadSkill(zipUrl, agent);
   return `Downloaded skill "${skill.name}" to ${skill.directory}`;
@@ -18,5 +26,6 @@ export default {
   name: "skills download",
   description: "Download and install a skill",
   help,
+  inputSchema,
   execute,
-} satisfies TokenRingAgentCommand;
+} satisfies TokenRingAgentCommand<typeof inputSchema>;

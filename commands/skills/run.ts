@@ -1,10 +1,18 @@
-import Agent from "@tokenring-ai/agent/Agent";
 import {CommandFailedError} from "@tokenring-ai/agent/AgentError";
-import {TokenRingAgentCommand} from "@tokenring-ai/agent/types";
+import type {AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentCommand} from "@tokenring-ai/agent/types";
 import SkillService from "../../SkillService.ts";
 
-async function execute(remainder: string, agent: Agent): Promise<string> {
-  const [name, ...promptParts] = remainder.trim().split(/\s+/);
+const inputSchema = {
+  args: {},
+  prompt: {
+    description: "Skill name and optional prompt",
+    required: true,
+  },
+  allowAttachments: false,
+} as const satisfies AgentCommandInputSchema;
+
+async function execute({prompt, agent}: AgentCommandInputType<typeof inputSchema>): Promise<string> {
+  const [name, ...promptParts] = prompt.trim().split(/\s+/);
   if (!name) throw new CommandFailedError("Usage: /skills run <name> [prompt]");
   return await agent.requireServiceByType(SkillService).runSkill(name, promptParts.join(" "), agent);
 }
@@ -17,5 +25,6 @@ export default {
   name: "skills run",
   description: "Run an installed skill",
   help,
+  inputSchema,
   execute,
-} satisfies TokenRingAgentCommand;
+} satisfies TokenRingAgentCommand<typeof inputSchema>;

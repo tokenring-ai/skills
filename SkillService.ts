@@ -2,16 +2,16 @@ import {AgentCommandService} from "@tokenring-ai/agent";
 import Agent from "@tokenring-ai/agent/Agent";
 import {CommandFailedError} from "@tokenring-ai/agent/AgentError";
 import {runSubAgent} from "@tokenring-ai/agent/runSubAgent";
-import type {TokenRingAgentCommand} from "@tokenring-ai/agent/types";
-import {TokenRingService} from "../app/types.ts";
+import type {AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentCommand} from "@tokenring-ai/agent/types";
 import ChatService from "@tokenring-ai/chat/ChatService";
 import runChat from "@tokenring-ai/chat/runChat";
 import {getChatAnalytics} from "@tokenring-ai/chat/util/getChatAnalytics";
-import fs from "node:fs/promises";
-import path from "node:path";
-import {tmpdir} from "node:os";
 import {spawn} from "node:child_process";
+import fs from "node:fs/promises";
+import {tmpdir} from "node:os";
+import path from "node:path";
 import {z} from "zod";
+import {TokenRingService} from "../app/types.ts";
 import {SkillsAgentConfigSchema, SkillsConfigSchema} from "./schema.ts";
 import {SkillState} from "./state/SkillState.ts";
 
@@ -224,13 +224,23 @@ export default class SkillService implements TokenRingService {
     return skills.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  private createSkillCommand(name: string): TokenRingAgentCommand {
+  private createSkillCommand(name: string): TokenRingAgentCommand<any> {
+    const inputSchema = {
+      args: {},
+      prompt: {
+        description: "Skill prompt",
+        required: false,
+      },
+      allowAttachments: false,
+    } as const satisfies AgentCommandInputSchema;
+
     return {
       name,
       description: `/${name} - Run the ${name} skill`,
       help: `# /${name} [prompt]\n\nRun the ${name} skill with an optional prompt.`,
-      execute: async (remainder: string, agent: Agent) => await this.runSkill(name, remainder.trim(), agent),
-    } satisfies TokenRingAgentCommand;
+      inputSchema,
+      execute: async ({prompt, agent}: AgentCommandInputType<typeof inputSchema>) => await this.runSkill(name, prompt?.trim() || "", agent),
+    } satisfies TokenRingAgentCommand<typeof inputSchema>;
   }
 
   private renderSkillPrompt(skill: SkillDefinition, prompt: string, agent: Agent): string {

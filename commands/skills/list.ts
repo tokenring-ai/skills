@@ -1,9 +1,13 @@
-import Agent from "@tokenring-ai/agent/Agent";
-import {TokenRingAgentCommand} from "@tokenring-ai/agent/types";
+import type {AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentCommand} from "@tokenring-ai/agent/types";
 import markdownTable from "../../../utility/string/markdownTable.ts";
 import SkillService from "../../SkillService.ts";
 
-async function execute(_remainder: string, agent: Agent): Promise<string> {
+const inputSchema = {
+  args: {},
+  allowAttachments: false,
+} as const satisfies AgentCommandInputSchema;
+
+async function execute({agent}: AgentCommandInputType<typeof inputSchema>): Promise<string> {
   const skills = await agent.requireServiceByType(SkillService).listSkills(agent, {includeDisabled: true});
   if (skills.length === 0) return "No skills installed. Use /skills download <zip-url> to add one.";
 
@@ -30,5 +34,6 @@ export default {
   name: "skills list",
   description: "List installed skills",
   help,
+  inputSchema,
   execute,
-} satisfies TokenRingAgentCommand;
+} satisfies TokenRingAgentCommand<typeof inputSchema>;
