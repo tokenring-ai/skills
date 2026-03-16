@@ -20,7 +20,7 @@ Skills that are user-invocable are also available directly as \`/skill-name [pro
 
 export default {
   name: "skills",
-  description: "/skills - Manage installed skills",
+  description: "Manage installed skills",
   help,
   execute: async (_remainder: string, agent: Agent) => await list.execute("", agent),
 } satisfies TokenRingAgentCommand;

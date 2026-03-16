@@ -16,7 +16,7 @@ Enable an installed skill.`;
 
 export default {
   name: "skills enable",
-  description: "/skills enable - Enable an installed skill",
+  description: "Enable an installed skill",
   help,
   execute,
 } satisfies TokenRingAgentCommand;

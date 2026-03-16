@@ -28,7 +28,7 @@ List installed Token Ring skills, including disabled ones.`;
 
 export default {
   name: "skills list",
-  description: "/skills list - List installed skills",
+  description: "List installed skills",
   help,
   execute,
 } satisfies TokenRingAgentCommand;

@@ -16,7 +16,7 @@ Delete an installed skill.`;
 
 export default {
   name: "skills delete",
-  description: "/skills delete - Delete an installed skill",
+  description: "Delete an installed skill",
   help,
   execute,
 } satisfies TokenRingAgentCommand;

@@ -15,7 +15,7 @@ Run an installed skill with an optional prompt.`;
 
 export default {
   name: "skills run",
-  description: "/skills run - Run an installed skill",
+  description: "Run an installed skill",
   help,
   execute,
 } satisfies TokenRingAgentCommand;

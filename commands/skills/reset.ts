@@ -16,7 +16,7 @@ Reset an installed skill to its source state.`;
 
 export default {
   name: "skills reset",
-  description: "/skills reset - Reset an installed skill",
+  description: "Reset an installed skill",
   help,
   execute,
 } satisfies TokenRingAgentCommand;

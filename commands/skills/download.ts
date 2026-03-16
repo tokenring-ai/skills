@@ -16,7 +16,7 @@ Download and install a skill from a zip URL.`;
 
 export default {
   name: "skills download",
-  description: "/skills download - Download and install a skill",
+  description: "Download and install a skill",
   help,
   execute,
 } satisfies TokenRingAgentCommand;
