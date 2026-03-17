@@ -4,28 +4,23 @@ import SkillService from "../../SkillService.ts";
 
 const inputSchema = {
   args: {},
-  prompt: {
-    description: "Skill name",
-    required: true,
-  },
+  positionals: [{name: "name", description: "Skill name", required: true}],
   allowAttachments: false,
 } as const satisfies AgentCommandInputSchema;
 
-async function execute({prompt, agent}: AgentCommandInputType<typeof inputSchema>): Promise<string> {
-  const name = prompt.trim();
-  if (!name) throw new CommandFailedError("Usage: /skills delete <name>");
+async function execute({positionals: { name }, agent}: AgentCommandInputType<typeof inputSchema>): Promise<string> {
   await agent.requireServiceByType(SkillService).deleteSkill(name, agent);
   return `Deleted skill "${name}".`;
 }
 
-const help = `# /skills delete <name>
-
-Delete an installed skill.`;
-
 export default {
   name: "skills delete",
   description: "Delete an installed skill",
-  help,
+  help: `Delete an installed skill.
+
+## Example
+
+/skills delete my-skill`,
   inputSchema,
   execute,
 } satisfies TokenRingAgentCommand<typeof inputSchema>;

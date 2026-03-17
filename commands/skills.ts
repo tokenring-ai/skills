@@ -1,9 +1,7 @@
 import type {AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentCommand} from "@tokenring-ai/agent/types";
 import list from "./skills/list.ts";
 
-const help = `# /skills
-
-Manage Token Ring skills stored under \`.tokenring/skills\`.
+const help = `Manage TokenRing skills stored under \`.tokenring/skills\`.
 
 ## Commands
 
@@ -17,10 +15,7 @@ Manage Token Ring skills stored under \`.tokenring/skills\`.
 
 Skills that are user-invocable are also available directly as \`/skill-name [prompt]\`.`;
 
-const inputSchema = {
-  args: {},
-  allowAttachments: false,
-} as const satisfies AgentCommandInputSchema;
+const inputSchema = {} as const satisfies AgentCommandInputSchema;
 
 export default {
   name: "skills",

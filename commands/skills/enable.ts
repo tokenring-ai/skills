@@ -4,28 +4,23 @@ import SkillService from "../../SkillService.ts";
 
 const inputSchema = {
   args: {},
-  prompt: {
-    description: "Skill name",
-    required: true,
-  },
+  positionals: [{name: "name", description: "Skill name", required: true}],
   allowAttachments: false,
 } as const satisfies AgentCommandInputSchema;
 
-async function execute({prompt, agent}: AgentCommandInputType<typeof inputSchema>): Promise<string> {
-  const name = prompt.trim();
-  if (!name) throw new CommandFailedError("Usage: /skills enable <name>");
+async function execute({positionals: { name }, agent}: AgentCommandInputType<typeof inputSchema>): Promise<string> {
   const skill = await agent.requireServiceByType(SkillService).enableSkill(name, agent);
   return `Enabled skill "${skill.name}".`;
 }
 
-const help = `# /skills enable <name>
-
-Enable an installed skill.`;
-
 export default {
   name: "skills enable",
   description: "Enable an installed skill",
-  help,
+  help: `Enable an installed skill.
+
+## Example
+
+/skills enable my-skill`,
   inputSchema,
   execute,
 } satisfies TokenRingAgentCommand<typeof inputSchema>;

@@ -2,10 +2,7 @@ import type {AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentComma
 import markdownTable from "../../../utility/string/markdownTable.ts";
 import SkillService from "../../SkillService.ts";
 
-const inputSchema = {
-  args: {},
-  allowAttachments: false,
-} as const satisfies AgentCommandInputSchema;
+const inputSchema = {} as const satisfies AgentCommandInputSchema;
 
 async function execute({agent}: AgentCommandInputType<typeof inputSchema>): Promise<string> {
   const skills = await agent.requireServiceByType(SkillService).listSkills(agent, {includeDisabled: true});
@@ -26,9 +23,7 @@ ${markdownTable(
   `.trim();
 }
 
-const help = `# /skills list
-
-List installed Token Ring skills, including disabled ones.`;
+const help = `List installed TokenRing skills, including disabled ones.`;
 
 export default {
   name: "skills list",
