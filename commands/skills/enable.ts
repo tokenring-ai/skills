@@ -1,11 +1,9 @@
-import {CommandFailedError} from "@tokenring-ai/agent/AgentError";
 import type {AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentCommand} from "@tokenring-ai/agent/types";
 import SkillService from "../../SkillService.ts";
 
 const inputSchema = {
   args: {},
-  positionals: [{name: "name", description: "Skill name", required: true}],
-  allowAttachments: false,
+  positionals: [{name: "name", description: "Skill name", required: true}]
 } as const satisfies AgentCommandInputSchema;
 
 async function execute({positionals: { name }, agent}: AgentCommandInputType<typeof inputSchema>): Promise<string> {

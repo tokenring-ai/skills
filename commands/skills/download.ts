@@ -1,11 +1,9 @@
-import {CommandFailedError} from "@tokenring-ai/agent/AgentError";
 import type {AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentCommand} from "@tokenring-ai/agent/types";
 import SkillService from "../../SkillService.ts";
 
 const inputSchema = {
   args: {},
-  positionals: [{name: "zipUrl", description: "Skill ZIP URL", required: true}],
-  allowAttachments: false,
+  positionals: [{name: "zipUrl", description: "Skill ZIP URL", required: true}]
 } as const satisfies AgentCommandInputSchema;
 
 async function execute({positionals: { zipUrl }, agent}: AgentCommandInputType<typeof inputSchema>): Promise<string> {

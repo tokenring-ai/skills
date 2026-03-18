@@ -227,8 +227,7 @@ export default class SkillService implements TokenRingService {
   private createSkillCommand(name: string): TokenRingAgentCommand<any> {
     const inputSchema = {
       args: {},
-      positionals: [{name: "prompt", description: "Skill prompt", required: false, defaultValue: "Run this skill", greedy: true}],
-      allowAttachments: false,
+      remainder: {name: "prompt", description: "Skill prompt", defaultValue: "Run this skill"}
     } as const satisfies AgentCommandInputSchema;
 
     return {
@@ -236,7 +235,7 @@ export default class SkillService implements TokenRingService {
       description: `/${name} - Run the ${name} skill`,
       help: `Run the ${name} skill with an optional prompt.`,
       inputSchema,
-      execute: async ({positionals: { prompt }, agent}: AgentCommandInputType<typeof inputSchema>) => await this.runSkill(name, prompt, agent),
+      execute: async ({remainder, agent}: AgentCommandInputType<typeof inputSchema>) => await this.runSkill(name, remainder, agent),
     } satisfies TokenRingAgentCommand<typeof inputSchema>;
   }
 
