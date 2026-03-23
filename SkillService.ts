@@ -1,7 +1,6 @@
-import {AgentCommandService} from "@tokenring-ai/agent";
+import {AgentCommandService, SubAgentService} from "@tokenring-ai/agent";
 import Agent from "@tokenring-ai/agent/Agent";
 import {CommandFailedError} from "@tokenring-ai/agent/AgentError";
-import {runSubAgent} from "@tokenring-ai/agent/runSubAgent";
 import type {AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentCommand} from "@tokenring-ai/agent/types";
 import ChatService from "@tokenring-ai/chat/ChatService";
 import runChat from "@tokenring-ai/chat/runChat";
@@ -184,14 +183,16 @@ export default class SkillService implements TokenRingService {
     const rendered = this.renderSkillPrompt(skill, prompt, agent);
 
     if (skill.frontmatter.context === "fork") {
-      const result = await runSubAgent({
+      const subAgentService = agent.requireServiceByType(SubAgentService);
+      const result = await subAgentService.runSubAgent({
         agentType: skill.frontmatter.agent ?? this.options.defaultSkillAgentType,
         headless: agent.headless,
         input: {
           from: `Skill ${name}`,
           message: `/work ${rendered}`
         },
-      }, agent, true);
+        parentAgent: agent
+      });
 
       if (result.status !== "success") {
         throw new CommandFailedError(result.response || `Skill "${name}" failed`);
