@@ -187,10 +187,8 @@ export default class SkillService implements TokenRingService {
       const result = await subAgentService.runSubAgent({
         agentType: skill.frontmatter.agent ?? this.options.defaultSkillAgentType,
         headless: agent.headless,
-        input: {
-          from: `Skill ${name}`,
-          message: `/work ${rendered}`
-        },
+        from: `Skill ${name}`,
+        steps: [`/work ${rendered}`],
         parentAgent: agent
       });
 
