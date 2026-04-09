@@ -1,7 +1,7 @@
 import {AgentCommandService} from "@tokenring-ai/agent";
-import {TokenRingPlugin} from "../app/types.ts";
 import {ChatService} from "@tokenring-ai/chat";
 import {z} from "zod";
+import {TokenRingPlugin} from "../app/types.ts";
 import commands from "./commands.ts";
 import packageJSON from "./package.json" with {type: "json"};
 import {SkillsConfigSchema} from "./schema.ts";
