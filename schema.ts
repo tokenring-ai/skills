@@ -1,7 +1,9 @@
+import {SubAgentConfigSchema} from "@tokenring-ai/agent/schema";
 import {z} from "zod";
 
 export const SkillsAgentConfigSchema = z.object({
-  enabledSkills: z.array(z.string()).default([]),
+  enabledSkills: z.array(z.string()).optional(),
+  subAgent: SubAgentConfigSchema.optional()
 }).prefault({});
 
 export const SkillsConfigSchema = z.object({
@@ -9,5 +11,10 @@ export const SkillsConfigSchema = z.object({
   registryFile: z.string().default(".tokenring/skills/.skills-registry.json"),
   tempDirectory: z.string().default("/tmp/tokenring-skills"),
   defaultSkillAgentType: z.string().default("general-purpose"),
-  agentDefaults: SkillsAgentConfigSchema.prefault({}),
+  agentDefaults: z.object({
+    enabledSkills: z.array(z.string()).default([]),
+    subAgent: SubAgentConfigSchema.prefault({}),
+  }).prefault({}),
 });
+
+export type ParsedSkillsConfig = z.output<typeof SkillsConfigSchema>;

@@ -5,6 +5,7 @@ import type {AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentComma
 import ChatService from "@tokenring-ai/chat/ChatService";
 import runChat from "@tokenring-ai/chat/runChat";
 import {getChatAnalytics} from "@tokenring-ai/chat/util/getChatAnalytics";
+import deepMerge from "@tokenring-ai/utility/object/deepMerge";
 import {spawn} from "node:child_process";
 import fs from "node:fs/promises";
 import {tmpdir} from "node:os";
@@ -52,13 +53,9 @@ export default class SkillService implements TokenRingService {
   constructor(readonly options: z.output<typeof SkillsConfigSchema>) {}
 
   attach(agent: Agent): void {
-    const agentConfig = {
-      ...this.options.agentDefaults,
-      ...agent.getAgentConfigSlice("skills", SkillsAgentConfigSchema),
-    };
-    agent.initializeState(SkillState, {
-      enabledSkills: agentConfig.enabledSkills,
-    });
+    const config = deepMerge(this.options.agentDefaults, agent.getAgentConfigSlice('skills', SkillsAgentConfigSchema));
+
+    agent.initializeState(SkillState, config);
   }
 
   async start(): Promise<void> {
@@ -182,6 +179,8 @@ export default class SkillService implements TokenRingService {
 
     const rendered = this.renderSkillPrompt(skill, prompt, agent);
 
+    const {subAgent: options} = agent.getState(SkillState);
+
     if (skill.frontmatter.context === "fork") {
       const subAgentService = agent.requireServiceByType(SubAgentService);
       const result = await subAgentService.runSubAgent({
@@ -189,7 +188,8 @@ export default class SkillService implements TokenRingService {
         headless: agent.headless,
         from: `Skill ${name}`,
         steps: [`/work ${rendered}`],
-        parentAgent: agent
+        parentAgent: agent,
+        options,
       });
 
       if (result.status !== "success") {
