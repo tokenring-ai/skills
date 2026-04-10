@@ -1,7 +1,7 @@
-import {AgentCommandService, SubAgentService} from "@tokenring-ai/agent";
-import Agent from "@tokenring-ai/agent/Agent";
+import {type AgentCommandService, SubAgentService} from "@tokenring-ai/agent";
+import type Agent from "@tokenring-ai/agent/Agent";
 import {CommandFailedError} from "@tokenring-ai/agent/AgentError";
-import type {AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentCommand} from "@tokenring-ai/agent/types";
+import type {AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentCommand,} from "@tokenring-ai/agent/types";
 import ChatService from "@tokenring-ai/chat/ChatService";
 import runChat from "@tokenring-ai/chat/runChat";
 import {getChatAnalytics} from "@tokenring-ai/chat/util/getChatAnalytics";
@@ -10,9 +10,9 @@ import {spawn} from "node:child_process";
 import fs from "node:fs/promises";
 import {tmpdir} from "node:os";
 import path from "node:path";
-import {z} from "zod";
-import {TokenRingService} from "../app/types.ts";
-import {SkillsAgentConfigSchema, SkillsConfigSchema} from "./schema.ts";
+import type {z} from "zod";
+import type {TokenRingService} from "../app/types.ts";
+import {SkillsAgentConfigSchema, type SkillsConfigSchema} from "./schema.ts";
 import {SkillState} from "./state/SkillState.ts";
 
 export type SkillFrontmatter = {
@@ -50,10 +50,14 @@ export default class SkillService implements TokenRingService {
   private commandService?: AgentCommandService;
   private registeredDynamicCommands = new Set<string>();
 
-  constructor(readonly options: z.output<typeof SkillsConfigSchema>) {}
+  constructor(readonly options: z.output<typeof SkillsConfigSchema>) {
+  }
 
   attach(agent: Agent): void {
-    const config = deepMerge(this.options.agentDefaults, agent.getAgentConfigSlice('skills', SkillsAgentConfigSchema));
+    const config = deepMerge(
+      this.options.agentDefaults,
+      agent.getAgentConfigSlice("skills", SkillsAgentConfigSchema),
+    );
 
     agent.initializeState(SkillState, config);
   }
@@ -79,31 +83,46 @@ export default class SkillService implements TokenRingService {
     }
   }
 
-  async listSkills(agent: Agent, {includeDisabled = true}: {includeDisabled?: boolean} = {}): Promise<SkillDefinition[]> {
+  async listSkills(
+    agent: Agent,
+    {includeDisabled = true}: { includeDisabled?: boolean } = {},
+  ): Promise<SkillDefinition[]> {
     const skills = await this.listInstalledSkills();
     const enabledSkills = agent.getState(SkillState).enabledSkills;
-    const resolvedSkills = skills.map(skill => ({
+    const resolvedSkills = skills.map((skill) => ({
       ...skill,
       enabled: enabledSkills.has(skill.name),
     }));
 
-    return includeDisabled ? resolvedSkills : resolvedSkills.filter(skill => skill.enabled);
+    return includeDisabled
+      ? resolvedSkills
+      : resolvedSkills.filter((skill) => skill.enabled);
   }
 
   async getSkill(name: string, agent: Agent): Promise<SkillDefinition> {
     const skills = await this.listSkills(agent, {includeDisabled: true});
-    const skill = skills.find(item => item.name === name || item.slug === name);
+    const skill = skills.find(
+      (item) => item.name === name || item.slug === name,
+    );
     if (!skill) throw new CommandFailedError(`Skill "${name}" not found.`);
     return skill;
   }
 
   async downloadSkill(zipUrl: string, agent: Agent): Promise<SkillDefinition> {
     if (!zipUrl.trim()) throw new CommandFailedError("zipUrl is required");
-    const tempRoot = await fs.mkdtemp(path.join(this.options.tempDirectory || path.join(tmpdir(), "tokenring-skills"), "download-"));
+    const tempRoot = await fs.mkdtemp(
+      path.join(
+        this.options.tempDirectory || path.join(tmpdir(), "tokenring-skills"),
+        "download-",
+      ),
+    );
     const zipFile = path.join(tempRoot, "skill.zip");
     try {
       const response = await fetch(zipUrl);
-      if (!response.ok) throw new Error(`Failed to download skill archive (${response.status})`);
+      if (!response.ok)
+        throw new Error(
+          `Failed to download skill archive (${response.status})`,
+        );
       const buffer = Buffer.from(await response.arrayBuffer());
       await fs.writeFile(zipFile, buffer);
 
@@ -113,14 +132,22 @@ export default class SkillService implements TokenRingService {
 
       const skillEntryDir = await this.findExtractedSkillDirectory(extractDir);
       const skillFile = path.join(skillEntryDir, "SKILL.md");
-      const parsed = await this.readSkillFromFile(skillEntryDir, skillFile, zipUrl);
+      const parsed = await this.readSkillFromFile(
+        skillEntryDir,
+        skillFile,
+        zipUrl,
+      );
       const slug = this.slugify(parsed.name || path.basename(skillEntryDir));
       const targetDir = path.join(this.resolveSkillsDirectory(), slug);
 
       await fs.rm(targetDir, {recursive: true, force: true});
       await fs.mkdir(path.dirname(targetDir), {recursive: true});
       await fs.cp(skillEntryDir, targetDir, {recursive: true});
-      await this.writeRegistryEntry(slug, {url: zipUrl, installedAt: new Date().toISOString(), updatedAt: new Date().toISOString()});
+      await this.writeRegistryEntry(slug, {
+        url: zipUrl,
+        installedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
 
       agent.mutateState(SkillState, (state) => {
         state.enabledSkills.add(parsed.name);
@@ -175,7 +202,8 @@ export default class SkillService implements TokenRingService {
 
   async runSkill(name: string, prompt: string, agent: Agent): Promise<string> {
     const skill = await this.getSkill(name, agent);
-    if (!skill.enabled) throw new CommandFailedError(`Skill "${name}" is disabled.`);
+    if (!skill.enabled)
+      throw new CommandFailedError(`Skill "${name}" is disabled.`);
 
     const rendered = this.renderSkillPrompt(skill, prompt, agent);
 
@@ -184,7 +212,8 @@ export default class SkillService implements TokenRingService {
     if (skill.frontmatter.context === "fork") {
       const subAgentService = agent.requireServiceByType(SubAgentService);
       const result = await subAgentService.runSubAgent({
-        agentType: skill.frontmatter.agent ?? this.options.defaultSkillAgentType,
+        agentType:
+          skill.frontmatter.agent ?? this.options.defaultSkillAgentType,
         headless: agent.headless,
         from: `Skill ${name}`,
         steps: [`/work ${rendered}`],
@@ -193,7 +222,9 @@ export default class SkillService implements TokenRingService {
       });
 
       if (result.status !== "success") {
-        throw new CommandFailedError(result.response || `Skill "${name}" failed`);
+        throw new CommandFailedError(
+          result.response || `Skill "${name}" failed`,
+        );
       }
       return result.response;
     }
@@ -216,7 +247,11 @@ export default class SkillService implements TokenRingService {
       const directory = path.join(skillsDir, entry.name);
       const skillFile = path.join(directory, "SKILL.md");
       if (!(await this.pathExists(skillFile))) continue;
-      const skill = await this.readSkillFromFile(directory, skillFile, registry[entry.name]?.url);
+      const skill = await this.readSkillFromFile(
+        directory,
+        skillFile,
+        registry[entry.name]?.url,
+      );
       skills.push(skill);
     }
 
@@ -226,7 +261,11 @@ export default class SkillService implements TokenRingService {
   private createSkillCommand(name: string): TokenRingAgentCommand<any> {
     const inputSchema = {
       args: {},
-      remainder: {name: "prompt", description: "Skill prompt", defaultValue: "Run this skill"}
+      remainder: {
+        name: "prompt",
+        description: "Skill prompt",
+        defaultValue: "Run this skill",
+      },
     } as const satisfies AgentCommandInputSchema;
 
     return {
@@ -234,16 +273,30 @@ export default class SkillService implements TokenRingService {
       description: `/${name} - Run the ${name} skill`,
       help: `Run the ${name} skill with an optional prompt.`,
       inputSchema,
-      execute: async ({remainder, agent}: AgentCommandInputType<typeof inputSchema>) => await this.runSkill(name, remainder, agent),
+      execute: async ({
+                        remainder,
+                        agent,
+                      }: AgentCommandInputType<typeof inputSchema>) =>
+        await this.runSkill(name, remainder, agent),
     } satisfies TokenRingAgentCommand<typeof inputSchema>;
   }
 
-  private renderSkillPrompt(skill: SkillDefinition, prompt: string, agent: Agent): string {
+  private renderSkillPrompt(
+    skill: SkillDefinition,
+    prompt: string,
+    agent: Agent,
+  ): string {
     const args = prompt.trim().length > 0 ? prompt.trim().split(/\s+/) : [];
     let body = skill.body;
     body = body.replace(/\$ARGUMENTS\b/g, prompt.trim());
-    body = body.replace(/\$ARGUMENTS\[(\d+)\]/g, (_match, index) => args[Number(index)] ?? "");
-    body = body.replace(/\$(\d+)\b/g, (_match, index) => args[Number(index)] ?? "");
+    body = body.replace(
+      /\$ARGUMENTS\[(\d+)\]/g,
+      (_match, index) => args[Number(index)] ?? "",
+    );
+    body = body.replace(
+      /\$(\d+)\b/g,
+      (_match, index) => args[Number(index)] ?? "",
+    );
     body = body.replace(/\$\{TOKENRING_SKILL_DIR\}/g, skill.directory);
     body = body.replace(/\$\{TOKENRING_SESSION_ID\}/g, agent.id);
 
@@ -254,11 +307,18 @@ export default class SkillService implements TokenRingService {
     return body;
   }
 
-  private async readSkillFromFile(directory: string, skillFile: string, sourceUrl?: string): Promise<SkillDefinition> {
+  private async readSkillFromFile(
+    directory: string,
+    skillFile: string,
+    sourceUrl?: string,
+  ): Promise<SkillDefinition> {
     const content = await fs.readFile(skillFile, "utf8");
     const {frontmatter, body} = this.parseSkill(content);
     const slug = this.slugify(frontmatter.name || path.basename(directory));
-    const description = frontmatter.description || body.split(/\n\s*\n/)[0]?.trim() || `Skill ${slug}`;
+    const description =
+      frontmatter.description ||
+      body.split(/\n\s*\n/)[0]?.trim() ||
+      `Skill ${slug}`;
 
     return {
       slug,
@@ -273,17 +333,25 @@ export default class SkillService implements TokenRingService {
     };
   }
 
-  private parseSkill(content: string): {frontmatter: SkillFrontmatter; body: string} {
+  private parseSkill(content: string): {
+    frontmatter: SkillFrontmatter;
+    body: string;
+  } {
     const lines = content.split(/\r?\n/);
     if (lines[0]?.trim() !== "---") {
       return {frontmatter: {}, body: content.trim()};
     }
 
-    const endIndex = lines.findIndex((line, index) => index > 0 && line.trim() === "---");
+    const endIndex = lines.findIndex(
+      (line, index) => index > 0 && line.trim() === "---",
+    );
     if (endIndex === -1) return {frontmatter: {}, body: content.trim()};
 
     const frontmatterLines = lines.slice(1, endIndex);
-    const body = lines.slice(endIndex + 1).join("\n").trim();
+    const body = lines
+      .slice(endIndex + 1)
+      .join("\n")
+      .trim();
     const frontmatter: SkillFrontmatter = {};
 
     for (const line of frontmatterLines) {
@@ -322,7 +390,13 @@ export default class SkillService implements TokenRingService {
   }
 
   private slugify(value: string): string {
-    return value.trim().toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "") || "skill";
+    return (
+      value
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9-]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "skill"
+    );
   }
 
   private resolveSkillsDirectory(): string {
@@ -344,12 +418,17 @@ export default class SkillService implements TokenRingService {
     return JSON.parse(raw || "{}") as Record<string, SkillRegistryEntry>;
   }
 
-  private async writeRegistry(registry: Record<string, SkillRegistryEntry>): Promise<void> {
+  private async writeRegistry(
+    registry: Record<string, SkillRegistryEntry>,
+  ): Promise<void> {
     const registryFile = path.resolve(process.cwd(), this.options.registryFile);
     await fs.writeFile(registryFile, `${JSON.stringify(registry, null, 2)}\n`);
   }
 
-  private async writeRegistryEntry(skill: string, entry: SkillRegistryEntry): Promise<void> {
+  private async writeRegistryEntry(
+    skill: string,
+    entry: SkillRegistryEntry,
+  ): Promise<void> {
     const registry = await this.readRegistry();
     registry[skill] = entry;
     await this.writeRegistry(registry);
@@ -372,9 +451,11 @@ export default class SkillService implements TokenRingService {
 
   private async unzip(zipFile: string, destination: string): Promise<void> {
     await new Promise<void>((resolve, reject) => {
-      const child = spawn("unzip", ["-q", zipFile, "-d", destination], {stdio: "ignore"});
+      const child = spawn("unzip", ["-q", zipFile, "-d", destination], {
+        stdio: "ignore",
+      });
       child.on("error", reject);
-      child.on("exit", code => {
+      child.on("exit", (code) => {
         if (code === 0) resolve();
         else reject(new Error(`unzip failed with exit code ${code}`));
       });

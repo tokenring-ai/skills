@@ -1,7 +1,7 @@
 import {AgentCommandService} from "@tokenring-ai/agent";
 import {ChatService} from "@tokenring-ai/chat";
 import {z} from "zod";
-import {TokenRingPlugin} from "../app/types.ts";
+import type {TokenRingPlugin} from "../app/types.ts";
 import commands from "./commands.ts";
 import packageJSON from "./package.json" with {type: "json"};
 import {SkillsConfigSchema} from "./schema.ts";
@@ -20,8 +20,10 @@ export default {
   install(app, config) {
     const service = new SkillService(config.skills);
     app.addServices(service);
-    app.waitForService(ChatService, chatService => chatService.addTools(tools));
-    app.waitForService(AgentCommandService, async commandService => {
+    app.waitForService(ChatService, (chatService) =>
+      chatService.addTools(tools),
+    );
+    app.waitForService(AgentCommandService, async (commandService) => {
       service.setCommandService(commandService);
       commandService.addAgentCommands(commands);
       await service.registerDynamicSkillCommands();
