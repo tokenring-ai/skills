@@ -1,5 +1,5 @@
 import type Agent from "@tokenring-ai/agent/Agent";
-import type {TokenRingToolDefinition} from "@tokenring-ai/chat/schema";
+import type {TokenRingToolDefinition, TokenRingToolResult} from "@tokenring-ai/chat/schema";
 import {z} from "zod";
 import SkillService from "../SkillService.ts";
 
@@ -18,7 +18,7 @@ const inputSchema = z.object({
 async function execute(
   {name, prompt}: z.output<typeof inputSchema>,
   agent: Agent,
-) {
+): Promise<TokenRingToolResult> {
   return await agent
     .requireServiceByType(SkillService)
     .runSkill(name, prompt ?? "", agent);

@@ -77,6 +77,7 @@ const skills = await agent.requireServiceByType(SkillService).listSkills(agent, 
 ```
 
 **Returns:** Array of `SkillDefinition` objects containing:
+
 - `slug` - URL-safe identifier
 - `name` - Human-readable skill name
 - `description` - Skill description
@@ -104,6 +105,7 @@ const skill = await agent.requireServiceByType(SkillService).downloadSkill("http
 ```
 
 **Process:**
+
 1. Downloads zip file to temporary directory
 2. Extracts to find SKILL.md file
 3. Parses frontmatter and body
@@ -153,6 +155,7 @@ const result = await agent.requireServiceByType(SkillService).runSkill("code-rev
 ```
 
 **Execution Modes:**
+
 - **Context: "fork"** - Runs in a sub-agent with specified agent type
 - **Default** - Runs through the main chat service
 
@@ -367,6 +370,7 @@ User-invocable skills (where `user-invocable: true` in frontmatter) are automati
 ```
 
 Example:
+
 ```
 /code-review Review this pull request
 ```
@@ -397,6 +401,7 @@ app.install(skillsPlugin, {
 ### Service Registration
 
 The plugin automatically registers:
+
 - `SkillService` - Main skill management service
 - Chat tools via `ChatService`
 - Agent commands via `AgentCommandService`
@@ -434,7 +439,7 @@ agent.mutateState(SkillState, (state) => {
 mkdir .tokenring/skills/my-skill
 ```
 
-2. Add `SKILL.md` with frontmatter:
+1. Add `SKILL.md` with frontmatter:
 
 ```markdown
 ---
@@ -450,7 +455,7 @@ This skill does something useful.
 $ARGUMENTS
 ```
 
-3. The skill is automatically registered and available as `/my-skill [prompt]`
+1. The skill is automatically registered and available as `/my-skill [prompt]`
 
 ### Downloading Skills Programmatically
 

@@ -1,5 +1,5 @@
 import type {Agent} from "@tokenring-ai/agent";
-import {type ParsedSubAgentConfig, SubAgentConfigSchema,} from "@tokenring-ai/agent/schema";
+import {type ParsedSubAgentConfig, SubAgentConfigSchema} from "@tokenring-ai/agent/schema";
 import {AgentStateSlice} from "@tokenring-ai/agent/types";
 import {z} from "zod";
 import type {ParsedSkillsConfig} from "../schema.ts";

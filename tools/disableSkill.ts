@@ -1,5 +1,5 @@
 import type Agent from "@tokenring-ai/agent/Agent";
-import type {TokenRingToolDefinition} from "@tokenring-ai/chat/schema";
+import type {TokenRingToolDefinition, TokenRingToolResult} from "@tokenring-ai/chat/schema";
 import {z} from "zod";
 import SkillService from "../SkillService.ts";
 
@@ -11,14 +11,11 @@ const inputSchema = z.object({
   name: z.string().min(1).describe("Installed skill name"),
 });
 
-async function execute({name}: z.output<typeof inputSchema>, agent: Agent) {
+async function execute({name}: z.output<typeof inputSchema>, agent: Agent): Promise<TokenRingToolResult> {
   const skill = await agent
     .requireServiceByType(SkillService)
     .disableSkill(name, agent);
-  return {
-    type: "json" as const,
-    data: {name: skill.name, enabled: skill.enabled},
-  };
+  return `Disabled skill ${skill.name}`;
 }
 
 export default {

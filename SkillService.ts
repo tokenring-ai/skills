@@ -1,7 +1,7 @@
 import {type AgentCommandService, SubAgentService} from "@tokenring-ai/agent";
 import type Agent from "@tokenring-ai/agent/Agent";
 import {CommandFailedError} from "@tokenring-ai/agent/AgentError";
-import type {AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentCommand,} from "@tokenring-ai/agent/types";
+import type {AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentCommand} from "@tokenring-ai/agent/types";
 import ChatService from "@tokenring-ai/chat/ChatService";
 import runChat from "@tokenring-ai/chat/runChat";
 import {getChatAnalytics} from "@tokenring-ai/chat/util/getChatAnalytics";
