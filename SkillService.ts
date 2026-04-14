@@ -6,6 +6,7 @@ import ChatService from "@tokenring-ai/chat/ChatService";
 import runChat from "@tokenring-ai/chat/runChat";
 import {getChatAnalytics} from "@tokenring-ai/chat/util/getChatAnalytics";
 import deepMerge from "@tokenring-ai/utility/object/deepMerge";
+import markdownList from "@tokenring-ai/utility/string/markdownList";
 import {spawn} from "node:child_process";
 import fs from "node:fs/promises";
 import {tmpdir} from "node:os";
@@ -232,7 +233,7 @@ export default class SkillService implements TokenRingService {
     const chatService = agent.requireServiceByType(ChatService);
     const chatConfig = chatService.getChatConfig(agent);
     const response = await runChat({input: rendered, chatConfig, agent});
-    return `Skill ${name} complete\n${getChatAnalytics(response)}`;
+    return `Skill ${name} complete\n${markdownList(getChatAnalytics(response))}`;
   }
 
   private async listInstalledSkills(): Promise<SkillDefinition[]> {
