@@ -21,7 +21,7 @@ export default {
     const service = new SkillService(config.skills);
     app.addServices(service);
     app.waitForService(ChatService, (chatService) =>
-      chatService.addTools(tools),
+      chatService.addTools(...tools),
     );
     app.waitForService(AgentCommandService, async (commandService) => {
       service.setCommandService(commandService);
