@@ -6,12 +6,4 @@ import listSkills from "./tools/listSkills.ts";
 import resetSkill from "./tools/resetSkill.ts";
 import runSkill from "./tools/runSkill.ts";
 
-export default [
-  listSkills,
-  downloadSkill,
-  runSkill,
-  deleteSkill,
-  enableSkill,
-  disableSkill,
-  resetSkill,
-];
+export default [listSkills, downloadSkill, runSkill, deleteSkill, enableSkill, disableSkill, resetSkill];

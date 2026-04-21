@@ -1,8 +1,8 @@
-import type {Agent} from "@tokenring-ai/agent";
-import {type ParsedSubAgentConfig, SubAgentConfigSchema} from "@tokenring-ai/agent/schema";
-import {AgentStateSlice} from "@tokenring-ai/agent/types";
-import {z} from "zod";
-import type {ParsedSkillsConfig} from "../schema.ts";
+import type { Agent } from "@tokenring-ai/agent";
+import { type ParsedSubAgentConfig, SubAgentConfigSchema } from "@tokenring-ai/agent/schema";
+import { AgentStateSlice } from "@tokenring-ai/agent/types";
+import { z } from "zod";
+import type { ParsedSkillsConfig } from "../schema.ts";
 
 const serializationSchema = z
   .object({
@@ -15,10 +15,7 @@ export class SkillState extends AgentStateSlice<typeof serializationSchema> {
   enabledSkills: Set<string>;
   subAgent: ParsedSubAgentConfig;
 
-  constructor({
-                enabledSkills = [],
-                subAgent,
-              }: ParsedSkillsConfig["agentDefaults"]) {
+  constructor({ enabledSkills = [], subAgent }: ParsedSkillsConfig["agentDefaults"]) {
     super("SkillState", serializationSchema);
     this.enabledSkills = new Set(enabledSkills);
     this.subAgent = subAgent;

@@ -1,4 +1,4 @@
-import type {AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentCommand} from "@tokenring-ai/agent/types";
+import type { AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentCommand } from "@tokenring-ai/agent/types";
 import list from "./skills/list.ts";
 
 const help = `Manage TokenRing skills stored under \`.tokenring/skills\`.
@@ -22,6 +22,5 @@ export default {
   description: "Manage installed skills",
   help,
   inputSchema,
-  execute: async ({agent}: AgentCommandInputType<typeof inputSchema>) =>
-    await list.execute({agent}),
+  execute: async ({ agent }: AgentCommandInputType<typeof inputSchema>) => await list.execute({ agent }),
 } satisfies TokenRingAgentCommand<typeof inputSchema>;

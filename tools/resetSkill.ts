@@ -1,21 +1,18 @@
 import type Agent from "@tokenring-ai/agent/Agent";
-import type {TokenRingToolDefinition, TokenRingToolResult} from "@tokenring-ai/chat/schema";
-import {z} from "zod";
+import type { TokenRingToolDefinition, TokenRingToolResult } from "@tokenring-ai/chat/schema";
+import { z } from "zod";
 import SkillService from "../SkillService.ts";
 
 const name = "skills_resetSkill";
 const displayName = "Skills/resetSkill";
-const description =
-  "Reset an installed skill to its downloaded state if possible";
+const description = "Reset an installed skill to its downloaded state if possible";
 
 const inputSchema = z.object({
   name: z.string().min(1).describe("Installed skill name"),
 });
 
-async function execute({name}: z.output<typeof inputSchema>, agent: Agent): Promise<TokenRingToolResult> {
-  const skill = await agent
-    .requireServiceByType(SkillService)
-    .resetSkill(name, agent);
+async function execute({ name }: z.output<typeof inputSchema>, agent: Agent): Promise<TokenRingToolResult> {
+  const skill = await agent.requireServiceByType(SkillService).resetSkill(name, agent);
   return `Reset skill ${skill.name}`;
 }
 

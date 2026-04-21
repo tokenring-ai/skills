@@ -1,10 +1,10 @@
-import {SubAgentConfigSchema} from "@tokenring-ai/agent/schema";
-import {z} from "zod";
+import { SubAgentConfigSchema } from "@tokenring-ai/agent/schema";
+import { z } from "zod";
 
 export const SkillsAgentConfigSchema = z
   .object({
-    enabledSkills: z.array(z.string()).optional(),
-    subAgent: SubAgentConfigSchema.optional(),
+    enabledSkills: z.array(z.string()).exactOptional(),
+    subAgent: SubAgentConfigSchema.exactOptional(),
   })
   .prefault({});
 
