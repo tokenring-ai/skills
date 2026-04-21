@@ -23,5 +23,5 @@ export default {
   help,
   inputSchema,
   execute: async ({agent}: AgentCommandInputType<typeof inputSchema>) =>
-    await list.execute({agent, args: {}} as any),
+    await list.execute({agent}),
 } satisfies TokenRingAgentCommand<typeof inputSchema>;
