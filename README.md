@@ -1,10 +1,14 @@
 # @tokenring-ai/skills
 
-Agent skills system for Token Ring that provides a framework for creating, managing, and executing AI-powered skills. Skills are stored as markdown files with frontmatter metadata and can be downloaded, enabled/disabled, and invoked through both chat tools and agent commands.
+Agent skills system for Token Ring that provides a framework for creating, managing, and executing AI-powered skills.
+Skills are stored as markdown files with frontmatter metadata and can be downloaded, enabled/disabled, and invoked
+through both chat tools and agent commands.
 
 ## Overview
 
-The `@tokenring-ai/skills` package implements a skill management system that allows Token Ring agents to extend their capabilities through downloadable skill packages. Each skill is a self-contained module with its own prompt template, configuration, and execution context.
+The `@tokenring-ai/skills` package implements a skill management system that allows Token Ring agents to extend their
+capabilities through downloadable skill packages. Each skill is a self-contained module with its own prompt template,
+configuration, and execution context.
 
 ### Key Features
 
@@ -42,16 +46,16 @@ const config = {
   skills: {
     // Directory where skills are stored (default: ".tokenring/skills")
     skillsDirectory: ".tokenring/skills",
-    
+
     // Registry file for tracking downloaded skills (default: ".tokenring/skills/.skills-registry.json")
     registryFile: ".tokenring/skills/.skills-registry.json",
-    
+
     // Temporary directory for skill downloads (default: "/tmp/tokenring-skills")
     tempDirectory: "/tmp/tokenring-skills",
-    
+
     // Default agent type for skill execution (default: "general-purpose")
     defaultSkillAgentType: "general-purpose",
-    
+
     // Agent configuration defaults for skills
     agentDefaults: {
       enabledSkills: [] // Array of skill names to enable by default
@@ -216,15 +220,15 @@ $ARGUMENTS
 
 ### Frontmatter Fields
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `name` | string | No | Skill name (slugified if not provided) |
-| `description` | string | No | Skill description |
-| `argument-hint` | string | No | Hint for command usage |
-| `disable-model-invocation` | boolean | No | Disable AI model invocation |
-| `user-invocable` | boolean | No | Whether to register as agent command (default: true) |
-| `context` | string | No | Execution context ("fork" for sub-agent, default for chat) |
-| `agent` | string | No | Agent type for fork context (default from config) |
+| Field                      | Type    | Required | Description                                                |
+|----------------------------|---------|----------|------------------------------------------------------------|
+| `name`                     | string  | No       | Skill name (slugified if not provided)                     |
+| `description`              | string  | No       | Skill description                                          |
+| `argument-hint`            | string  | No       | Hint for command usage                                     |
+| `disable-model-invocation` | boolean | No       | Disable AI model invocation                                |
+| `user-invocable`           | boolean | No       | Whether to register as agent command (default: true)       |
+| `context`                  | string  | No       | Execution context ("fork" for sub-agent, default for chat) |
+| `agent`                    | string  | No       | Agent type for fork context (default from config)          |
 
 ## Chat Tools
 
@@ -277,7 +281,7 @@ const inputSchema = z.object({
 
 // Usage
 const result = await tools.skills_runSkill.execute(
-  {name: "code-review", prompt: "Review this PR"},
+  { name: "code-review", prompt: "Review this PR" },
   agent
 );
 ```
@@ -350,16 +354,16 @@ The package registers both static and dynamic agent commands.
 
 ### Static Commands
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `/skills` | Show help and available commands | `/skills` |
-| `/skills list` | List all installed skills | `/skills list` |
-| `/skills download <zip-url>` | Download and install a skill | `/skills download https://example.com/skill.zip` |
-| `/skills run <name> [prompt]` | Run a skill with optional prompt | `/skills run code-review` |
-| `/skills delete <name>` | Delete a skill | `/skills delete code-review` |
-| `/skills enable <name>` | Enable a skill | `/skills enable code-review` |
-| `/skills disable <name>` | Disable a skill | `/skills disable code-review` |
-| `/skills reset <name>` | Reset a skill to source | `/skills reset code-review` |
+| Command                       | Description                      | Example                                          |
+|-------------------------------|----------------------------------|--------------------------------------------------|
+| `/skills`                     | Show help and available commands | `/skills`                                        |
+| `/skills list`                | List all installed skills        | `/skills list`                                   |
+| `/skills download <zip-url>`  | Download and install a skill     | `/skills download https://example.com/skill.zip` |
+| `/skills run <name> [prompt]` | Run a skill with optional prompt | `/skills run code-review`                        |
+| `/skills delete <name>`       | Delete a skill                   | `/skills delete code-review`                     |
+| `/skills enable <name>`       | Enable a skill                   | `/skills enable code-review`                     |
+| `/skills disable <name>`      | Disable a skill                  | `/skills disable code-review`                    |
+| `/skills reset <name>`        | Reset a skill to source          | `/skills reset code-review`                      |
 
 ### Dynamic Commands
 
@@ -516,13 +520,13 @@ bun run build
 
 ## Dependencies
 
-| Package | Version | Purpose |
-|---------|---------|---------|
-| `@tokenring-ai/agent` | 0.2.0 | Core agent system |
-| `@tokenring-ai/app` | 0.2.0 | Application framework |
-| `@tokenring-ai/chat` | 0.2.0 | Chat service and tools |
-| `@tokenring-ai/utility` | 0.2.0 | Shared utilities |
-| `zod` | ^4.3.6 | Schema validation |
+| Package                 | Version | Purpose                |
+|-------------------------|---------|------------------------|
+| `@tokenring-ai/agent`   | 0.2.0   | Core agent system      |
+| `@tokenring-ai/app`     | 0.2.0   | Application framework  |
+| `@tokenring-ai/chat`    | 0.2.0   | Chat service and tools |
+| `@tokenring-ai/utility` | 0.2.0   | Shared utilities       |
+| `zod`                   | ^4.3.6  | Schema validation      |
 
 ## Related Components
 
