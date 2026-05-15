@@ -1,3 +1,4 @@
+import deepClone from "@tokenring-ai/utility/object/deepClone";
 import { spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -9,7 +10,6 @@ import type { AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentComm
 import ChatService from "@tokenring-ai/chat/ChatService";
 import runChat from "@tokenring-ai/chat/runChat";
 import { getChatAnalytics } from "@tokenring-ai/chat/util/getChatAnalytics";
-import deepMerge from "@tokenring-ai/utility/object/deepMerge";
 import markdownList from "@tokenring-ai/utility/string/markdownList";
 import type { z } from "zod";
 import type { TokenRingService } from "../app/types.ts";
@@ -54,7 +54,7 @@ export default class SkillService implements TokenRingService {
   constructor(readonly options: z.output<typeof SkillsConfigSchema>) {}
 
   attach(agent: Agent): void {
-    const config = deepMerge(this.options.agentDefaults, agent.getAgentConfigSlice("skills", SkillsAgentConfigSchema));
+    const config = deepClone(this.options.agentDefaults, agent.getAgentConfigSlice("skills", SkillsAgentConfigSchema));
 
     agent.initializeState(SkillState, config);
   }

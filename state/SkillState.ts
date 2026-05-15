@@ -1,6 +1,7 @@
 import type { Agent } from "@tokenring-ai/agent";
 import { type ParsedSubAgentConfig, SubAgentConfigSchema } from "@tokenring-ai/agent/schema";
 import { AgentStateSlice } from "@tokenring-ai/agent/types";
+import deepClone from "@tokenring-ai/utility/object/deepClone";
 import { z } from "zod";
 import type { ParsedSkillsConfig } from "../schema.ts";
 
@@ -15,15 +16,15 @@ export class SkillState extends AgentStateSlice<typeof serializationSchema> {
   enabledSkills: Set<string>;
   subAgent: ParsedSubAgentConfig;
 
-  constructor({ enabledSkills = [], subAgent }: ParsedSkillsConfig["agentDefaults"]) {
+  constructor(readonly initialConfig: ParsedSkillsConfig["agentDefaults"]) {
     super("SkillState", serializationSchema);
-    this.enabledSkills = new Set(enabledSkills);
-    this.subAgent = subAgent;
+    this.enabledSkills = new Set(initialConfig.enabledSkills);
+    this.subAgent = deepClone(initialConfig.subAgent);
   }
 
   transferStateFromParent(parent: Agent): void {
     this.enabledSkills = new Set(parent.getState(SkillState).enabledSkills);
-    this.subAgent = parent.getState(SkillState).subAgent;
+    this.subAgent = deepClone(parent.getState(SkillState).subAgent);
   }
 
   serialize(): z.output<typeof serializationSchema> {
