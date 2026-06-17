@@ -1,8 +1,3 @@
-import deepClone from "@tokenring-ai/utility/object/deepClone";
-import { spawn } from "node:child_process";
-import fs from "node:fs/promises";
-import { tmpdir } from "node:os";
-import path from "node:path";
 import { type AgentCommandService, SubAgentService } from "@tokenring-ai/agent";
 import type Agent from "@tokenring-ai/agent/Agent";
 import { CommandFailedError } from "@tokenring-ai/agent/AgentError";
@@ -10,7 +5,12 @@ import type { AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentComm
 import ChatService from "@tokenring-ai/chat/ChatService";
 import runChat from "@tokenring-ai/chat/runChat";
 import { getChatAnalytics } from "@tokenring-ai/chat/util/getChatAnalytics";
+import deepClone from "@tokenring-ai/utility/object/deepClone";
 import markdownList from "@tokenring-ai/utility/string/markdownList";
+import { spawn } from "node:child_process";
+import fs from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import type { z } from "zod";
 import type { TokenRingService } from "../app/types.ts";
 import { SkillsAgentConfigSchema, type SkillsConfigSchema } from "./schema.ts";

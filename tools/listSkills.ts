@@ -8,7 +8,7 @@ const displayName = "Skills/listSkills";
 const description = "List installed Token Ring skills";
 
 const inputSchema = z.object({
-  includeDisabled: z.boolean().default(true).exactOptional(),
+  includeDisabled: z.boolean().default(true),
 });
 
 async function execute({ includeDisabled }: z.output<typeof inputSchema>, agent: Agent): Promise<TokenRingToolResult> {
