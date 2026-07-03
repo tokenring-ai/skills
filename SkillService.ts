@@ -304,8 +304,8 @@ export default class SkillService implements TokenRingService {
     for (const line of frontmatterLines) {
       const match = line.match(/^([A-Za-z0-9_-]+)\s*:\s*(.*)$/);
       if (!match) continue;
-      const rawKey = match[1].trim();
-      const rawValue = match[2].trim();
+      const rawKey = match[1]!.trim();
+      const rawValue = match[2]!.trim();
       const key = rawKey.toLowerCase();
       const value = rawValue.replace(/^['"]|['"]$/g, "");
       switch (key) {
