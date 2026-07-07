@@ -4,8 +4,8 @@ import { z } from "zod";
 import type { TokenRingPlugin } from "../app/types.ts";
 import commands from "./commands.ts";
 import packageJSON from "./package.json" with { type: "json" };
-import { SkillsConfigSchema } from "./schema.ts";
 import SkillService from "./SkillService.ts";
+import { SkillsConfigSchema } from "./schema.ts";
 import tools from "./tools.ts";
 
 const packageConfigSchema = z.object({
