@@ -4,13 +4,16 @@
   "description": "Capability management system for tracking and routing tasks based on agent proficiency.",
   "dependencies": {
     "@tokenring-ai/agent": "workspace:*",
+    "@tokenring-ai/app": "workspace:*",
     "@tokenring-ai/chat": "workspace:*",
+    "@tokenring-ai/rpc": "workspace:*",
     "@tokenring-ai/utility": "workspace:*",
     "zod": "^4.4.3"
   },
   "exports": {
     ".": "./index.ts",
-    "./*": "./*.ts"
+    "./*": "./*.ts",
+    "./rpc/schema": "./rpc/schema.ts"
   },
   "license": "MIT",
   "type": "module",

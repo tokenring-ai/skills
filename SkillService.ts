@@ -209,7 +209,7 @@ export default class SkillService implements TokenRingService {
     return `Skill ${name} complete\n${markdownList(getChatAnalytics(response))}`;
   }
 
-  private async listInstalledSkills(): Promise<SkillDefinition[]> {
+  async listInstalledSkills(): Promise<SkillDefinition[]> {
     const skillsDir = this.resolveSkillsDirectory();
     await fs.mkdir(skillsDir, { recursive: true });
     const entries = await fs.readdir(skillsDir, { withFileTypes: true });
