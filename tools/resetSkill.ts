@@ -13,7 +13,10 @@ const inputSchema = z.object({
 
 async function execute({ name }: z.output<typeof inputSchema>, agent: Agent): Promise<TokenRingToolResult> {
   const skill = await agent.requireServiceByType(SkillService).resetSkill(name, agent);
-  return `Reset skill ${skill.name}`;
+  return {
+    message: `**Skills** Reset skill ${skill.name}`,
+    result: `Reset skill ${skill.name}`,
+  };
 }
 
 export default {
