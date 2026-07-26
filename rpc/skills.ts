@@ -26,7 +26,7 @@ const streamEnabledSkills = createAgentStateSliceStream({
   SliceClass: SkillState,
   project: state => ({
     status: "success" as const,
-    skills: [...state.enabledSkills],
+    skills: state.enabledSkills.valuesArray(),
   }),
 });
 
