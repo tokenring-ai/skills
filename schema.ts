@@ -38,6 +38,8 @@ export const SkillsConfigSchema = z
       .prefault({})
       .meta({ label: "Agent Defaults" } satisfies ConfigFieldMeta),
   })
+  .prefault({})
   .meta({ label: "Skills", description: "Reusable skills registry for agents" } satisfies ConfigFieldMeta);
 
+export type SkillsConfig = z.input<typeof SkillsConfigSchema>;
 export type ParsedSkillsConfig = z.output<typeof SkillsConfigSchema>;

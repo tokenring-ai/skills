@@ -11,9 +11,8 @@ import runChat from "@tokenring-ai/chat/runChat";
 import { getChatAnalytics } from "@tokenring-ai/chat/util/getChatAnalytics";
 import deepClone from "@tokenring-ai/utility/object/deepClone";
 import markdownList from "@tokenring-ai/utility/string/markdownList";
-import type { z } from "zod";
 import type { TokenRingService } from "../app/types.ts";
-import { SkillsAgentConfigSchema, type SkillsConfigSchema } from "./schema.ts";
+import { type ParsedSkillsConfig, SkillsAgentConfigSchema, SkillsConfigSchema } from "./schema.ts";
 import { SkillState } from "./state/SkillState.ts";
 
 export type SkillFrontmatter = {
@@ -50,8 +49,15 @@ export default class SkillService implements TokenRingService {
 
   private commandService?: AgentCommandService;
   private registeredDynamicCommands = new Set<string>();
+  private options = SkillsConfigSchema.parse({});
 
-  constructor(readonly options: z.output<typeof SkillsConfigSchema>) {}
+  constructor(options?: ParsedSkillsConfig) {
+    if (options) this.options = options;
+  }
+
+  reconfigure(options: ParsedSkillsConfig): void {
+    this.options = options;
+  }
 
   attach(agent: Agent): void {
     const config = deepClone(this.options.agentDefaults, agent.getAgentConfigSlice("skills", SkillsAgentConfigSchema));
