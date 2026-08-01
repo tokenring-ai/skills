@@ -6,8 +6,8 @@ const inputSchema = {
   positionals: [{ name: "name", description: "Skill name", required: true }],
 } as const satisfies AgentCommandInputSchema;
 
-async function execute({ positionals: { name }, agent }: AgentCommandInputType<typeof inputSchema>): Promise<string> {
-  const skill = await agent.requireServiceByType(SkillService).resetSkill(name, agent);
+async function execute({ args: { name }, agent }: AgentCommandInputType<typeof inputSchema>): Promise<string> {
+  const skill = await agent.requireService(SkillService).resetSkill(name, agent);
   return `Reset skill "${skill.name}".`;
 }
 

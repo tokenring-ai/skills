@@ -12,7 +12,7 @@ const inputSchema = z.object({
 });
 
 async function execute({ name }: z.output<typeof inputSchema>, agent: Agent): Promise<TokenRingToolResult> {
-  const skill = await agent.requireServiceByType(SkillService).enableSkill(name, agent);
+  const skill = await agent.requireService(SkillService).enableSkill(name, agent);
   return {
     message: `**Skills** Enabled skill ${skill.name}`,
     result: `Enabled skill ${skill.name}`,

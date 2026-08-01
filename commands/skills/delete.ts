@@ -6,8 +6,8 @@ const inputSchema = {
   positionals: [{ name: "name", description: "Skill name", required: true }],
 } as const satisfies AgentCommandInputSchema;
 
-async function execute({ positionals: { name }, agent }: AgentCommandInputType<typeof inputSchema>): Promise<string> {
-  await agent.requireServiceByType(SkillService).deleteSkill(name, agent);
+async function execute({ args: { name }, agent }: AgentCommandInputType<typeof inputSchema>): Promise<string> {
+  await agent.requireService(SkillService).deleteSkill(name, agent);
   return `Deleted skill "${name}".`;
 }
 

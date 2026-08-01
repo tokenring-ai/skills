@@ -20,9 +20,9 @@ export default {
   version: packageJSON.version,
   description: packageJSON.description,
   install(app) {
-    const service = new SkillService();
-    app.addServices(service);
-    app.waitForService(ChatService, chatService => chatService.addTools(...tools));
+    const service = app.addService(new SkillService());
+
+    app.waitForService(ChatService, chatService => chatService.addTools(tools));
     app.waitForService(AgentCommandService, async commandService => {
       service.setCommandService(commandService);
       commandService.addAgentCommands(commands);

@@ -12,7 +12,7 @@ const inputSchema = z.object({
 });
 
 async function execute({ includeDisabled }: z.output<typeof inputSchema>, agent: Agent): Promise<TokenRingToolResult> {
-  const skills = await agent.requireServiceByType(SkillService).listSkills(agent, { includeDisabled });
+  const skills = await agent.requireService(SkillService).listSkills(agent, { includeDisabled });
   const skillList = skills.map(skill => ({ name: skill.name, description: skill.description, enabled: skill.enabled, sourceUrl: skill.sourceUrl }));
   return {
     message: `**Skills** Listed skills`,

@@ -77,7 +77,7 @@ The main service class that manages skill lifecycle, storage, and execution.
 List all installed skills with their enabled status.
 
 ```typescript
-const skills = await agent.requireServiceByType(SkillService).listSkills(agent, {includeDisabled: true});
+const skills = await agent.requireService(SkillService).listSkills(agent, {includeDisabled: true});
 ```
 
 **Returns:** Array of `SkillDefinition` objects containing:
@@ -97,7 +97,7 @@ const skills = await agent.requireServiceByType(SkillService).listSkills(agent, 
 Retrieve a specific skill by name or slug.
 
 ```typescript
-const skill = await agent.requireServiceByType(SkillService).getSkill("code-review", agent);
+const skill = await agent.requireService(SkillService).getSkill("code-review", agent);
 ```
 
 #### `downloadSkill(zipUrl: string, agent: Agent): Promise<SkillDefinition>`
@@ -105,7 +105,7 @@ const skill = await agent.requireServiceByType(SkillService).getSkill("code-revi
 Download and install a skill from a zip file URL.
 
 ```typescript
-const skill = await agent.requireServiceByType(SkillService).downloadSkill("https://example.com/skills/code-review.zip", agent);
+const skill = await agent.requireService(SkillService).downloadSkill("https://example.com/skills/code-review.zip", agent);
 ```
 
 **Process:**
@@ -123,7 +123,7 @@ const skill = await agent.requireServiceByType(SkillService).downloadSkill("http
 Remove a skill from the system.
 
 ```typescript
-await agent.requireServiceByType(SkillService).deleteSkill("code-review", agent);
+await agent.requireService(SkillService).deleteSkill("code-review", agent);
 ```
 
 #### `enableSkill(name: string, agent: Agent): Promise<SkillDefinition>`
@@ -131,7 +131,7 @@ await agent.requireServiceByType(SkillService).deleteSkill("code-review", agent)
 Enable a disabled skill.
 
 ```typescript
-const skill = await agent.requireServiceByType(SkillService).enableSkill("code-review", agent);
+const skill = await agent.requireService(SkillService).enableSkill("code-review", agent);
 ```
 
 #### `disableSkill(name: string, agent: Agent): Promise<SkillDefinition>`
@@ -139,7 +139,7 @@ const skill = await agent.requireServiceByType(SkillService).enableSkill("code-r
 Disable a skill without removing it.
 
 ```typescript
-const skill = await agent.requireServiceByType(SkillService).disableSkill("code-review", agent);
+const skill = await agent.requireService(SkillService).disableSkill("code-review", agent);
 ```
 
 #### `resetSkill(name: string, agent: Agent): Promise<SkillDefinition>`
@@ -147,7 +147,7 @@ const skill = await agent.requireServiceByType(SkillService).disableSkill("code-
 Reset a skill to its downloaded state (re-downloads if source URL available).
 
 ```typescript
-const skill = await agent.requireServiceByType(SkillService).resetSkill("code-review", agent);
+const skill = await agent.requireService(SkillService).resetSkill("code-review", agent);
 ```
 
 #### `runSkill(name: string, prompt: string, agent: Agent): Promise<string>`
@@ -155,7 +155,7 @@ const skill = await agent.requireServiceByType(SkillService).resetSkill("code-re
 Execute a skill with the given prompt.
 
 ```typescript
-const result = await agent.requireServiceByType(SkillService).runSkill("code-review", "Review this pull request", agent);
+const result = await agent.requireService(SkillService).runSkill("code-review", "Review this pull request", agent);
 ```
 
 **Execution Modes:**
@@ -467,7 +467,7 @@ $ARGUMENTS
 import SkillService from "@tokenring-ai/skills/SkillService";
 
 async function installSkill(agent: Agent, url: string) {
-  const skillService = agent.requireServiceByType(SkillService);
+  const skillService = agent.requireService(SkillService);
   const skill = await skillService.downloadSkill(url, agent);
   console.log(`Installed skill: ${skill.name}`);
   return skill;
@@ -477,7 +477,7 @@ async function installSkill(agent: Agent, url: string) {
 ### Checking Skill Status
 
 ```typescript
-const skillService = agent.requireServiceByType(SkillService);
+const skillService = agent.requireService(SkillService);
 const skills = await skillService.listSkills(agent, {includeDisabled: true});
 
 const codeReview = skills.find(s => s.name === "code-review");

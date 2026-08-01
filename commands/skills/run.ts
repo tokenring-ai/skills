@@ -11,8 +11,8 @@ const inputSchema = {
   },
 } as const satisfies AgentCommandInputSchema;
 
-async function execute({ positionals: { name }, remainder, agent }: AgentCommandInputType<typeof inputSchema>): Promise<string> {
-  return await agent.requireServiceByType(SkillService).runSkill(name, remainder, agent);
+async function execute({ args: { name }, remainder, agent }: AgentCommandInputType<typeof inputSchema>): Promise<string> {
+  return await agent.requireService(SkillService).runSkill(name, remainder, agent);
 }
 
 export default {

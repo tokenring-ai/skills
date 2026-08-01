@@ -12,7 +12,7 @@ const inputSchema = z.object({
 });
 
 async function execute({ name }: z.output<typeof inputSchema>, agent: Agent): Promise<TokenRingToolResult> {
-  await agent.requireServiceByType(SkillService).deleteSkill(name, agent);
+  await agent.requireService(SkillService).deleteSkill(name, agent);
   return {
     message: `**Skills** Deleted skill ${name}`,
     result: `Deleted skill ${name}`,

@@ -2,10 +2,11 @@ import { spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { type AgentCommandService, SubAgentService } from "@tokenring-ai/agent";
+import type { AgentCommandService } from "@tokenring-ai/agent";
 import type Agent from "@tokenring-ai/agent/Agent";
 import { CommandFailedError } from "@tokenring-ai/agent/AgentError";
 import type { AgentCommandInputSchema, AgentCommandInputType, TokenRingAgentCommand } from "@tokenring-ai/agent/types";
+import { runSubAgent } from "@tokenring-ai/agent/util/runSubAgent";
 import ChatService from "@tokenring-ai/chat/ChatService";
 import runChat from "@tokenring-ai/chat/runChat";
 import { getChatAnalytics } from "@tokenring-ai/chat/util/getChatAnalytics";
@@ -193,8 +194,7 @@ export default class SkillService implements TokenRingService {
     const { subAgent: options } = agent.getState(SkillState);
 
     if (skill.frontmatter.context === "fork") {
-      const subAgentService = agent.requireServiceByType(SubAgentService);
-      const result = await subAgentService.runSubAgent({
+      const result = await runSubAgent({
         agentType: skill.frontmatter.agent ?? this.options.defaultSkillAgentType,
         headless: agent.headless,
         from: `Skill ${name}`,
@@ -209,7 +209,7 @@ export default class SkillService implements TokenRingService {
       return result.response;
     }
 
-    const chatService = agent.requireServiceByType(ChatService);
+    const chatService = agent.requireService(ChatService);
     const chatConfig = chatService.getChatConfig(agent);
     const response = await runChat({ input: rendered, chatConfig, agent });
     return `Skill ${name} complete\n${markdownList(getChatAnalytics(response))}`;

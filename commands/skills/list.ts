@@ -5,7 +5,7 @@ import SkillService from "../../SkillService.ts";
 const inputSchema = {} as const satisfies AgentCommandInputSchema;
 
 async function execute({ agent }: AgentCommandInputType<typeof inputSchema>): Promise<string> {
-  const skills = await agent.requireServiceByType(SkillService).listSkills(agent, { includeDisabled: true });
+  const skills = await agent.requireService(SkillService).listSkills(agent, { includeDisabled: true });
   if (skills.length === 0) return "No skills installed. Use /skills download <zip-url> to add one.";
 
   return `

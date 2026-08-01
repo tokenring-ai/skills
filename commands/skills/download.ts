@@ -6,8 +6,8 @@ const inputSchema = {
   positionals: [{ name: "zipUrl", description: "Skill ZIP URL", required: true }],
 } as const satisfies AgentCommandInputSchema;
 
-async function execute({ positionals: { zipUrl }, agent }: AgentCommandInputType<typeof inputSchema>): Promise<string> {
-  const skill = await agent.requireServiceByType(SkillService).downloadSkill(zipUrl, agent);
+async function execute({ args: { zipUrl }, agent }: AgentCommandInputType<typeof inputSchema>): Promise<string> {
+  const skill = await agent.requireService(SkillService).downloadSkill(zipUrl, agent);
   return `Downloaded skill "${skill.name}" to ${skill.directory}`;
 }
 

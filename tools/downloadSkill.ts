@@ -12,7 +12,7 @@ const inputSchema = z.object({
 });
 
 async function execute({ zipUrl }: z.output<typeof inputSchema>, agent: Agent): Promise<TokenRingToolResult> {
-  const skill = await agent.requireServiceByType(SkillService).downloadSkill(zipUrl, agent);
+  const skill = await agent.requireService(SkillService).downloadSkill(zipUrl, agent);
   return {
     message: `**Skills** Downloaded skill ${skill.name}`,
     result: `Downloaded and installed skill ${skill.name} to directory ${skill.directory}`,

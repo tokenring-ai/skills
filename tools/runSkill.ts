@@ -13,7 +13,7 @@ const inputSchema = z.object({
 });
 
 async function execute({ name, prompt }: z.output<typeof inputSchema>, agent: Agent): Promise<TokenRingToolResult> {
-  const result = await agent.requireServiceByType(SkillService).runSkill(name, prompt ?? "", agent);
+  const result = await agent.requireService(SkillService).runSkill(name, prompt ?? "", agent);
   return {
     message: `**Skills** Ran skill ${name}`,
     result,
