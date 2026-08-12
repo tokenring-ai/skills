@@ -8,7 +8,7 @@ const displayName = "Skills/downloadSkill";
 const description = "Download and install a skill from a zip file URL";
 
 const inputSchema = z.object({
-  zipUrl: z.string().url().describe("URL to a zip archive containing a skill with SKILL.md"),
+  zipUrl: z.url().describe("URL to a zip archive containing a skill with SKILL.md"),
 });
 
 async function execute({ zipUrl }: z.output<typeof inputSchema>, agent: Agent): Promise<TokenRingToolResult> {

@@ -12,7 +12,7 @@ import runChat from "@tokenring-ai/chat/runChat";
 import { getChatAnalytics } from "@tokenring-ai/chat/util/getChatAnalytics";
 import deepClone from "@tokenring-ai/utility/object/deepClone";
 import markdownList from "@tokenring-ai/utility/string/markdownList";
-import type { TokenRingService } from "../app/types.ts";
+import type { TokenRingService } from "@tokenring-ai/app/types";
 import { type ParsedSkillsConfig, SkillsAgentConfigSchema, SkillsConfigSchema } from "./schema.ts";
 import { SkillState } from "./state/SkillState.ts";
 
